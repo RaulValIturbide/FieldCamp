@@ -1,0 +1,182 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net472</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<PlatformTarget>x64</PlatformTarget>
+		<OutputPath>C:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\FieldCamp\bin\Win64_Shipping_Client</OutputPath>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Lib.Harmony" Version="2.4.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="Bannerlord.UIExtenderEx">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\261550\2859222409\bin\Win64_Shipping_Client\Bannerlord.UIExtenderEx.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="SandBox.View">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\SandBox\bin\Win64_Shipping_Client\SandBox.View.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.AchievementSystem">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.AchievementSystem.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.CampaignSystem">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.CampaignSystem.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.CampaignSystem.ViewModelCollection">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.CampaignSystem.ViewModelCollection.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.Core">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Core.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.Core.ViewModelCollection">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Core.ViewModelCollection.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.DotNet">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.DotNet.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.Engine">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Engine.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.Engine.GauntletUI">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Engine.GauntletUI.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.GauntletUI">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.GauntletUI.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.GauntletUI.CodeGenerator">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.GauntletUI.CodeGenerator.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.GauntletUI.Data">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.GauntletUI.Data.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.Library">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Library.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.Localization">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Localization.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.MountAndBlade">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.MountAndBlade.GauntletUI.Widgets">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.GauntletUI.Widgets.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.MountAndBlade.View">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\Native\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.View.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.MountAndBlade.ViewModelCollection">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.ViewModelCollection.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.ObjectSystem">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.ObjectSystem.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.SaveSystem">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.SaveSystem.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.ScreenSystem">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.ScreenSystem.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.Starter.Library">
+			<HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Starter.Library.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Update="System">
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Update="System.Core">
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Update="System.Data">
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Update="System.Drawing">
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Update="System.IO.Compression.FileSystem">
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Update="System.Numerics">
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Update="System.Runtime.Serialization">
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Update="System.Xml">
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Update="System.Xml.Linq">
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+
+</Project>
