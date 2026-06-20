@@ -134,6 +134,7 @@ namespace FieldCamp.Behaviours
         {
             QuestManager._IsCamping = false;
             QuestManager._IsTrainingCampaing = false;
+            QuestManager._resumeCampAfterEncounter = false; 
             _IsFirstTime = true;
             CampVisualPatch.RemoveTent();
             MobileParty.MainParty.Party.SetVisualAsDirty();

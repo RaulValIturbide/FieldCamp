@@ -46,10 +46,50 @@ namespace FieldCamp.Behaviours
         [DataSourceMethod]
         public void ExecuteCampamento()
         {
-            if (QuestManager._IsCamping || MobileParty.MainParty.IsCurrentlyAtSea)
+            if (HayImpedimento())
                 return;
+
             GameMenu.ActivateGameMenu("my_camp_activate");
             Campaign.Current.TimeControlMode = CampaignTimeControlMode.Stop;
+        }
+        private bool HayImpedimento()
+        {
+            bool hayImpedimento = true;
+            if (QuestManager._IsCamping)
+            {
+                InformationManager.DisplayMessage(
+                    new InformationMessage(new TextObject("{=my_camp_already_camping_error}The camp is already established.").ToString()
+                    ));
+            }
+            else if (MobileParty.MainParty.IsCurrentlyAtSea)
+            {
+                InformationManager.DisplayMessage(
+                    new InformationMessage(new TextObject("{=my_camp_at_sea_error}The camp cannot be established at sea.").ToString()
+                    ));
+            }
+            else if (!QuestManager.CanCamp())
+            {
+                InformationManager.DisplayMessage(
+                    new InformationMessage(new TextObject("{=my_camp_no_mans_error}The camp cannot be established with less than 2 soldiers.").ToString()
+                    ));
+            }
+            else if (MobileParty.MainParty.Army != null)
+            {
+                InformationManager.DisplayMessage(
+                    new InformationMessage(new TextObject("{=my_camp_at_army_error}The camp cannot be established in an army.").ToString()
+                    ));
+            }
+            else if (PlayerCaptivity.IsCaptive)
+            {
+                InformationManager.DisplayMessage(
+                    new InformationMessage(new TextObject("{=my_camp_is_captive_error}The camp cannot be established if you are captive.").ToString()
+                    ));
+            }
+            else
+            {
+                hayImpedimento = false;
+            }
+            return hayImpedimento;
         }
     }
 }

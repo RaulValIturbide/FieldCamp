@@ -6,27 +6,34 @@ using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Encounters;
 using TaleWorlds.CampaignSystem.GameMenus;
+using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
 namespace FieldCamp.Behaviours
 {
-    public class QuestManager :CampaignBehaviorBase
+    public class QuestManager : CampaignBehaviorBase
     {
         public static bool _IsCamping;
         public static bool _IsTrainingCampaing;
+        public static bool _resumeCampAfterEncounter;
+
         public override void RegisterEvents()
         {
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener(this, new Action<CampaignGameStarter>(OnSessionLaunched));
             CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, new Action(TrainYourTroopsCampaign.OnHourlyTick));
             CampaignEvents.TickEvent.AddNonSerializedListener(this, OnTick);
+            // Señal temprana y fiable cuando empieza una batalla en la que está el jugador
+            CampaignEvents.MapEventStarted.AddNonSerializedListener(this, OnMapEventStarted);
         }
 
         public override void SyncData(IDataStore dataStore)
         {
-            
+
         }
+
         public void OnSessionLaunched(CampaignGameStarter gameStarter)
         {
             //Menú del Campamento
@@ -51,7 +58,7 @@ namespace FieldCamp.Behaviours
                 , "train_troops_option"
                 , new TextObject("{=game_menu_train_troops_option}Train your men(campaign)").ToString()
                 , args =>
-                {                    
+                {
                     args.optionLeaveType = GameMenuOption.LeaveType.Wait;
                     args.Tooltip = new TextObject("{=hint_train_troops}Train your troops while you wait.");
                     return true;
@@ -61,7 +68,7 @@ namespace FieldCamp.Behaviours
                     _IsTrainingCampaing = true;
                     Campaign.Current.TimeControlMode = CampaignTimeControlMode.UnstoppableFastForward;
                     args.MenuContext.SetAmbientSound("event:/map/ambient/node/settlements/2d/arena");
-                }                
+                }
             );
             gameStarter.AddGameMenuOption(
                 "my_camp_activate"
@@ -81,26 +88,84 @@ namespace FieldCamp.Behaviours
                 true, -1, false);
 
         }
-
         private string CulturePlayerOrDefault()
         {
             var validas = new HashSet<string> { "aserai", "battania", "khuzait", "vlandia", "sturgia", "empire" };
             string id = Hero.MainHero.Culture.StringId;
             return validas.Contains(id) ? id : "empire";
         }
+        // Si te atacan mientras acampas, marcamos para reanudar (no desmontamos)
+        private void OnMapEventStarted(MapEvent mapEvent, PartyBase attackerParty, PartyBase defenderParty)
+        {
+            if (!QuestManager._IsCamping)
+                return;
+            if (!mapEvent.IsPlayerMapEvent)
+                return;
+
+            QuestManager._IsTrainingCampaing = false;
+            _resumeCampAfterEncounter = true;
+        }
         private void OnTick(float dt)
         {
             if (!QuestManager._IsCamping)
                 return;
 
-            // Si estoy "acampado" pero ya no estoy en mi menú de campamento,
-            // algo me sacó (soborno, batalla, entrar a un asentamiento...)
+            // (a) ¿Metidos en un encuentro / batalla / conversación hostil?
+            bool enEncuentro =
+                PlayerEncounter.Current != null ||
+                MapEvent.PlayerMapEvent != null ||
+                MobileParty.MainParty.MapEvent != null;
+
+            if (enEncuentro)
+            {
+                // Algo hostil nos sacó del campamento: pausamos el entreno,
+                // marcamos para reanudar y NO desmontamos.
+                QuestManager._IsTrainingCampaing = false;
+                _resumeCampAfterEncounter = true;
+                return;
+            }
+
+            // (b) El encuentro terminó y seguimos en el mapa: reabrir el campamento
+            if (_resumeCampAfterEncounter)
+            {
+                _resumeCampAfterEncounter = false;
+
+                bool seguimosVivos =
+                    MobileParty.MainParty != null &&
+                    MobileParty.MainParty.IsActive &&
+                    !Hero.MainHero.IsPrisoner;
+
+                if (seguimosVivos)
+                {
+                    GameMenu.ActivateGameMenu("my_camp_activate");
+                    Campaign.Current.TimeControlMode = CampaignTimeControlMode.Stop;
+                }
+                else
+                {
+                    TrainYourTroopsCampaign.DesactivarCampamento();
+                }
+                return;
+            }
+
+            // (c) Salida "normal" (algo cambió el menú sin ser un encuentro): desmontar
             string menuActual = Campaign.Current.CurrentMenuContext?.GameMenu?.StringId;
             if (menuActual != "my_camp_activate")
             {
                 TrainYourTroopsCampaign.DesactivarCampamento();
             }
-
+        }
+        public static bool CanCamp()
+        {
+            TroopRoster roster = MobileParty.MainParty.MemberRoster;
+            int contador = 0;
+            for(int i = 0; i < roster.Count; i++)
+            {
+                TroopRosterElement elemento = roster.GetElementCopyAtIndex(i);
+                if (elemento.Character.IsHero)
+                    continue;
+                contador++;
+            }
+            return contador > 1;
         }
     }
 }
