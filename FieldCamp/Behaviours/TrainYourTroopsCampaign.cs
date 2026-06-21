@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,9 +16,6 @@ namespace FieldCamp.Behaviours
     /// Esta clase sirve para gestionar la opción de Entrenar tropas en el mapa de campaña.
     /// El Jugador podrá mandar a entrenar sus tropas,estas recibirán exp y el Jugador mejorará su Liderazgo.    
     /// </summary>
-    /// TODO
-    /// Tirada de Heridos por entrenamiento
-    /// Comprobar que hay suficientes soldados no heridos para entrenar tropas (>=2)
     public class TrainYourTroopsCampaign
     {
         private static bool _IsFirstTime = true;
@@ -95,7 +90,7 @@ namespace FieldCamp.Behaviours
             {
                 InformationManager.DisplayMessage(
                             new InformationMessage(new TextObject(
-                                "{=train_troops_fail_training}The man trained half-heartedly; they haven't learned anything useful.").ToString()
+                                "{=train_troops_fail_training}The men trained half-heartedly; they haven't learned anything useful.").ToString()
                                 ));
             }
         }
@@ -188,9 +183,11 @@ namespace FieldCamp.Behaviours
                 if (type.Character.IsHero)
                     continue;
                 if (type.Character.UpgradeTargets != null && type.Character.UpgradeTargets.Length > 0)
+                {
                     _Aporte += type.Character.Tier * (type.Number - type.WoundedNumber);//Se aumenta el aporte con formula => Tier * soldados no heridos
-                _InfoExperienciaSoldados = FormulaDeExperienciaTropas();
-                roster.AddXpToTroop(type.Character, _InfoExperienciaSoldados);
+                    _InfoExperienciaSoldados = FormulaDeExperienciaTropas();
+                    roster.AddXpToTroop(type.Character, _InfoExperienciaSoldados);
+                }                    
             }
         }
         private static void DarExperienciaJugador()

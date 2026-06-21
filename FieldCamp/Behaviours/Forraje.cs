@@ -168,5 +168,38 @@ namespace FieldCamp.Behaviours
             _forrajeosEnSitio = 0;
             QuestManager._IsForraging = false;
         }
+
+        public static void ExportarZonas(out List<float> xs, out List<float> ys, out List<int> ticks)
+        {
+            xs = new List<float>();
+            ys = new List<float>();
+            ticks = new List<int>();
+
+            foreach (var zona in _zonasAgotadas)
+            {
+                xs.Add(zona.Centro.X);
+                ys.Add(zona.Centro.Y);
+                ticks.Add(zona.TicksRestantes);
+            }
+        }
+
+        public static void ImportarZonas(List<float> xs, List<float> ys, List<int> ticks)
+        {
+            _zonasAgotadas.Clear();
+
+            // Si la partida es vieja (sin estos datos) o algo viene null, no reconstruimos nada.
+            if (xs == null || ys == null || ticks == null)
+                return;
+
+            int n = Math.Min(xs.Count, Math.Min(ys.Count, ticks.Count));
+            for (int i = 0; i < n; i++)
+            {
+                _zonasAgotadas.Add(new ZonaAgotada
+                {
+                    Centro = new CampaignVec2(new Vec2(xs[i], ys[i]), true),
+                    TicksRestantes = ticks[i]
+                });
+            }
+        }
     }
 }

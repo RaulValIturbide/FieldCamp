@@ -27,13 +27,27 @@ namespace FieldCamp.Behaviours
             CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, new Action(TrainYourTroopsCampaign.OnHourlyTick));
             CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, new Action(Forraje.OnHourlyTick));
             CampaignEvents.TickEvent.AddNonSerializedListener(this, OnTick);
+            CampaignEvents.OnGameLoadedEvent.AddNonSerializedListener(this, new Action<CampaignGameStarter>(OnGameLoaded));
             // Señal temprana y fiable cuando empieza una batalla en la que está el jugador
             CampaignEvents.MapEventStarted.AddNonSerializedListener(this, OnMapEventStarted);
         }
 
         public override void SyncData(IDataStore dataStore)
         {
+            dataStore.SyncData("Field_IsCamping", ref _IsCamping);
 
+            List<float> xs = null, ys = null;
+            List<int> ticks = null;
+
+            if (dataStore.IsSaving)
+                Forraje.ExportarZonas(out xs, out ys, out ticks);   // lee las estáticas
+
+            dataStore.SyncData("FieldCamp_zona_x", ref xs);
+            dataStore.SyncData("FieldCamp_zona_y", ref ys);
+            dataStore.SyncData("FieldCamp_zona_ticks", ref ticks);
+
+            if (dataStore.IsLoading)
+                Forraje.ImportarZonas(xs, ys, ticks);
         }
 
         public void OnSessionLaunched(CampaignGameStarter gameStarter)
@@ -80,7 +94,7 @@ namespace FieldCamp.Behaviours
                 ,args =>
                 {
                     args.optionLeaveType = GameMenuOption.LeaveType.Wait;
-                    args.Tooltip = new TextObject("{=hint_forraging}Send your men to forrage the surroundings.");
+                    args.Tooltip = new TextObject("{=hint_forraging}Send the men to forrage the surroundings.");
                     return true;
                 }
                 ,args =>
@@ -108,6 +122,15 @@ namespace FieldCamp.Behaviours
                 },
                 true, -1, false);
 
+        }
+        private void OnGameLoaded(CampaignGameStarter starter)
+        {
+            _IsCamping = false;
+            _IsForraging = false;
+            _IsTrainingCampaing = false;
+            _resumeCampAfterEncounter = false;
+            // Forraje y entrenamiento resetean sus propios contadores:
+            Forraje.DesactivarForraje();          // pone contadorForrajeo=4, _forrajeosEnSitio=0
         }
         private string CulturePlayerOrDefault()
         {
