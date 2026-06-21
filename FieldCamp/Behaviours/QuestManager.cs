@@ -56,7 +56,7 @@ namespace FieldCamp.Behaviours
             gameStarter.AddGameMenuOption(
                   "my_camp_activate"
                 , "train_troops_option"
-                , new TextObject("{=game_menu_train_troops_option}Train your men(campaign)").ToString()
+                , new TextObject("{=game_menu_train_troops_option}Train your men (campaign)").ToString()
                 , args =>
                 {
                     args.optionLeaveType = GameMenuOption.LeaveType.Wait;
@@ -90,7 +90,7 @@ namespace FieldCamp.Behaviours
         }
         private string CulturePlayerOrDefault()
         {
-            var validas = new HashSet<string> { "aserai", "battania", "khuzait", "vlandia", "sturgia", "empire" };
+            var validas = new HashSet<string> { "aserai", "battania", "khuzait", "vlandia", "sturgia", "empire","nord" };
             string id = Hero.MainHero.Culture.StringId;
             return validas.Contains(id) ? id : "empire";
         }
@@ -147,7 +147,7 @@ namespace FieldCamp.Behaviours
                 return;
             }
 
-            // (c) Salida "normal" (algo cambió el menú sin ser un encuentro): desmontar
+            // Salida "normal" (algo cambió el menú sin ser un encuentro): desmontar
             string menuActual = Campaign.Current.CurrentMenuContext?.GameMenu?.StringId;
             if (menuActual != "my_camp_activate")
             {
@@ -163,9 +163,9 @@ namespace FieldCamp.Behaviours
                 TroopRosterElement elemento = roster.GetElementCopyAtIndex(i);
                 if (elemento.Character.IsHero)
                     continue;
-                contador++;
+                contador += (elemento.Number - elemento.WoundedNumber);
             }
-            return contador > 1;
+            return contador >= 2;
         }
     }
 }
