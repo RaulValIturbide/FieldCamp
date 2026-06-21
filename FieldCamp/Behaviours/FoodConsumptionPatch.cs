@@ -15,7 +15,7 @@ namespace FieldCamp.Behaviours
             if (!QuestManager._IsTrainingCampaing) return;
             if (party != MobileParty.MainParty) return;
 
-            __result.AddFactor(0.5f, new TextObject("{=food_consumption_info_training}Training camp."));
+            __result.AddFactor(0.5f, new TextObject("{=train_your_troops_food_consumption_info_training}Training camp."));
         }
     }
 }

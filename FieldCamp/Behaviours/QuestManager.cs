@@ -17,6 +17,7 @@ namespace FieldCamp.Behaviours
     public class QuestManager : CampaignBehaviorBase
     {
         public static bool _IsCamping;
+        public static bool _IsForraging;
         public static bool _IsTrainingCampaing;
         public static bool _resumeCampAfterEncounter;
 
@@ -24,6 +25,7 @@ namespace FieldCamp.Behaviours
         {
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener(this, new Action<CampaignGameStarter>(OnSessionLaunched));
             CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, new Action(TrainYourTroopsCampaign.OnHourlyTick));
+            CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, new Action(Forraje.OnHourlyTick));
             CampaignEvents.TickEvent.AddNonSerializedListener(this, OnTick);
             // Señal temprana y fiable cuando empieza una batalla en la que está el jugador
             CampaignEvents.MapEventStarted.AddNonSerializedListener(this, OnMapEventStarted);
@@ -72,6 +74,22 @@ namespace FieldCamp.Behaviours
             );
             gameStarter.AddGameMenuOption(
                 "my_camp_activate"
+                ,"start_forraging"
+                ,new TextObject("{=game_menu_forrage}Start forraging.").ToString()
+                ,args =>
+                {
+                    args.optionLeaveType = GameMenuOption.LeaveType.Wait;
+                    args.Tooltip = new TextObject("{hint_forraging}Send your men to forrage the surroundings.");
+                    return true;
+                }
+                ,args =>
+                {
+                    _IsForraging = true;
+                    Campaign.Current.TimeControlMode = CampaignTimeControlMode.UnstoppableFastForward;
+                }
+                );
+            gameStarter.AddGameMenuOption(
+                "my_camp_activate"
                 , "exit_camp_option"
                 , new TextObject("{=game_menu_exit_camp_option}Dismantle the camp.").ToString()
                 , args =>
@@ -83,6 +101,7 @@ namespace FieldCamp.Behaviours
                 , args =>
                 {
                     TrainYourTroopsCampaign.DesactivarCampamento();
+                    Forraje.DesactivarForraje();
                     GameMenu.ExitToLast();
                 },
                 true, -1, false);
