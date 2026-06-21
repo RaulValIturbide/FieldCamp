@@ -1,12 +1,7 @@
-﻿using HarmonyLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.Extensions;
-using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.Core;
@@ -17,56 +12,123 @@ namespace FieldCamp.Behaviours
 {
     public class Forraje
     {
-        public static bool _IsForraging;
-        public static int contadorForrajeo = 4;
+        public static int contadorForrajeo = 4;          // horas entre cada forrajeo
+
+        // Cuántos forrajeos seguidos llevamos en el sitio actual
+        private static int _forrajeosEnSitio = 0;
+        private const int MAX_FORRAJEOS = 4;             // tras 4 forrajeos, la zona se agota
+
+        // Zonas agotadas: centro + ticks que faltan para que se recupere
+        private static readonly List<ZonaAgotada> _zonasAgotadas = new();
+        private const float RADIO = 7f;                  // radio de la zona (unidades de mapa, a tunear)
+        private const int TICKS_RECUPERACION = 48;       // ~2 días para recuperarse
+
+        private class ZonaAgotada
+        {
+            public CampaignVec2 Centro;
+            public int TicksRestantes;
+        }
+
         public static void OnHourlyTick()
         {
-            if (QuestManager._IsCamping || !QuestManager._IsForraging)
+            // Las zonas se recuperan con el tiempo, estés forrajeando o no
+            RecuperarZonas();
+
+            if (!QuestManager._IsCamping || !QuestManager._IsForraging)
                 return;
+
             if (contadorForrajeo > 0)
             {
                 contadorForrajeo--;
                 return;
             }
             contadorForrajeo = 4;
+
+            CampaignVec2 pos = MobileParty.MainParty.Position;
+
+            // ¿Ya hemos esquilmado esta zona? No se puede forrajear aquí.
+            if (EstaEnZonaAgotada(pos))
+            {
+                InformationManager.DisplayMessage(new InformationMessage(
+                    new TextObject("{=forrage_exhausted}No more food is available in the area for now.").ToString()
+                    , new Color(1f, 0.6f, 0f)));
+                return;
+            }
+
             DarAlimento();
+
+            // Contamos el forrajeo en este sitio; si pasamos del máximo, agotamos la zona
+            _forrajeosEnSitio++;
+            if (_forrajeosEnSitio >= MAX_FORRAJEOS)
+            {
+                AgotarZona(pos);
+                _forrajeosEnSitio = 0;
+            }
         }
 
+        private static void RecuperarZonas()
+        {
+            for (int i = _zonasAgotadas.Count - 1; i >= 0; i--)
+            {
+                _zonasAgotadas[i].TicksRestantes--;
+                if (_zonasAgotadas[i].TicksRestantes <= 0)
+                    _zonasAgotadas.RemoveAt(i);
+            }
+        }
+
+        private static bool EstaEnZonaAgotada(CampaignVec2 pos)
+        {
+            foreach (var zona in _zonasAgotadas)
+            {
+                if (zona.Centro.Distance(pos) <= RADIO)
+                    return true;
+            }
+            return false;
+        }
+
+        private static void AgotarZona(CampaignVec2 centro)
+        {
+            _zonasAgotadas.Add(new ZonaAgotada
+            {
+                Centro = centro,
+                TicksRestantes = TICKS_RECUPERACION
+            });
+        }
 
         public static void DarAlimento()
         {
-            //Buscamos el terreno en el que se encuentra el jugador
             CampaignVec2 posicion = MobileParty.MainParty.Position;
             TerrainType terreno = Campaign.Current.MapSceneWrapper.GetTerrainTypeAtPosition(posicion);
 
-            //Sacamos la zona de forrajeo
             ZonaForrajeDTO zona = AlimentoDeForraje.ListaAlimentoDisponiblesEnTerreno(terreno);
 
-            if(zona.ExitoEnLaBusqueda())
+            if (zona.ExitoEnLaBusqueda())
             {
                 int cantidadComida = SeleccionarCuantaComida();
                 ItemObject comida = SeleccionComida(zona._ListaAlimentoDisponibles);
-                MobileParty.MainParty.ItemRoster.AddToCounts(comida,cantidadComida);
+                if (comida == null) return;
+                MobileParty.MainParty.ItemRoster.AddToCounts(comida, cantidadComida);
 
-                //Mensaje
-                TextObject TxtCantidadComida =new TextObject("={forrage_food_quantity}The man bring {quantity} of {food}.");
+                TextObject TxtCantidadComida = new TextObject("{=forrage_food_quantity}The men bring {quantity} of {food}.");
                 TxtCantidadComida.SetTextVariable("quantity", cantidadComida);
-                TxtCantidadComida.SetTextVariable("food", comida.GetName());
+                TxtCantidadComida.SetTextVariable("food", comida.Name);
 
                 InformationManager.DisplayMessage(new InformationMessage(TxtCantidadComida.ToString()));
             }
             else
             {
-                //TODO CAMBIAR
-                InformationManager.DisplayMessage(new InformationMessage("Los hombres no han encontrado nada."));
+                InformationManager.DisplayMessage(new InformationMessage(
+                    new TextObject("{=forrage_fail}The men found nothing.").ToString()
+                    , new Color(1f, 0f, 0f)));
             }
         }
-        private static ItemObject SeleccionComida(Dictionary<ItemObject,float> lista)
+
+        private static ItemObject SeleccionComida(Dictionary<ItemObject, float> lista)
         {
             float pesoTotal = lista.Values.Sum();
             float dado = MBRandom.RandomFloat * pesoTotal;
 
-            foreach(var item in lista)
+            foreach (var item in lista)
             {
                 dado -= item.Value;
                 if (dado <= 0f)
@@ -74,12 +136,15 @@ namespace FieldCamp.Behaviours
             }
             return lista.Keys.LastOrDefault();
         }
+
         private static int SeleccionarCuantaComida()
         {
             float k = 0.12f;
             int maxComida = 4;
 
             int comida = Convert.ToInt32(k * Math.Sqrt(CantidadSoldadosNoHeridos() * Hero.MainHero.GetSkillValue(DefaultSkills.Scouting)));
+            if (comida < 1)
+                comida = 1;
             return Math.Min(comida, maxComida);
         }
 
@@ -87,7 +152,7 @@ namespace FieldCamp.Behaviours
         {
             TroopRoster roster = MobileParty.MainParty.MemberRoster;
             float cantidadSoldados = 0;
-            for(int i = 0; i<roster.Count; i++)
+            for (int i = 0; i < roster.Count; i++)
             {
                 TroopRosterElement elemento = roster.GetElementCopyAtIndex(i);
                 if (elemento.Character.IsHero)
@@ -96,8 +161,11 @@ namespace FieldCamp.Behaviours
             }
             return cantidadSoldados;
         }
+
         public static void DesactivarForraje()
         {
+            contadorForrajeo = 4;
+            _forrajeosEnSitio = 0;
             QuestManager._IsForraging = false;
         }
     }

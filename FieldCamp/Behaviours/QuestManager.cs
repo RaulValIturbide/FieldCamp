@@ -68,6 +68,7 @@ namespace FieldCamp.Behaviours
                 , args =>
                 {
                     _IsTrainingCampaing = true;
+                    _IsForraging = false;
                     Campaign.Current.TimeControlMode = CampaignTimeControlMode.UnstoppableFastForward;
                     args.MenuContext.SetAmbientSound("event:/map/ambient/node/settlements/2d/arena");
                 }
@@ -79,12 +80,13 @@ namespace FieldCamp.Behaviours
                 ,args =>
                 {
                     args.optionLeaveType = GameMenuOption.LeaveType.Wait;
-                    args.Tooltip = new TextObject("{hint_forraging}Send your men to forrage the surroundings.");
+                    args.Tooltip = new TextObject("{=hint_forraging}Send your men to forrage the surroundings.");
                     return true;
                 }
                 ,args =>
                 {
                     _IsForraging = true;
+                    _IsTrainingCampaing = false;
                     Campaign.Current.TimeControlMode = CampaignTimeControlMode.UnstoppableFastForward;
                 }
                 );
