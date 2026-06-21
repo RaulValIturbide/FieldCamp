@@ -175,6 +175,7 @@ namespace FieldCamp.Behaviours
             TxtInfo.SetTextVariable("soldado", soldado.Name);
             InformationManager.DisplayMessage(
                 new InformationMessage(TxtInfo.ToString(), new TaleWorlds.Library.Color(1f, 0f, 0f)));
+            MBInformationManager.AddQuickInformation(TxtInfo, 0);
         }
         private static void DarExperienciaSoldados()
         {
