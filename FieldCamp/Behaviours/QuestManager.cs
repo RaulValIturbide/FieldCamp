@@ -19,6 +19,7 @@ namespace FieldCamp.Behaviours
         public static bool _IsCamping;
         public static bool _IsForraging;
         public static bool _IsTrainingCampaing;
+        public static bool _IsHiding;
         public static bool _resumeCampAfterEncounter;
 
         public override void RegisterEvents()
@@ -26,6 +27,7 @@ namespace FieldCamp.Behaviours
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener(this, new Action<CampaignGameStarter>(OnSessionLaunched));
             CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, new Action(TrainYourTroopsCampaign.OnHourlyTick));
             CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, new Action(Forraje.OnHourlyTick));
+            CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, new Action(Emboscada.OnHourlyTick));
             CampaignEvents.TickEvent.AddNonSerializedListener(this, OnTick);
             CampaignEvents.OnGameLoadedEvent.AddNonSerializedListener(this, new Action<CampaignGameStarter>(OnGameLoaded));
             // Señal temprana y fiable cuando empieza una batalla en la que está el jugador
@@ -75,7 +77,7 @@ namespace FieldCamp.Behaviours
                 , new TextObject("{=game_menu_train_troops_option}Train your men (campaign)").ToString()
                 , args =>
                 {
-                    args.optionLeaveType = GameMenuOption.LeaveType.Wait;
+                    args.optionLeaveType = GameMenuOption.LeaveType.PracticeFight;
                     args.Tooltip = new TextObject("{=hint_train_troops}Train your troops while you wait.");
                     return true;
                 }
@@ -83,17 +85,19 @@ namespace FieldCamp.Behaviours
                 {
                     _IsTrainingCampaing = true;
                     _IsForraging = false;
+                    _IsHiding = false;
                     Campaign.Current.TimeControlMode = CampaignTimeControlMode.UnstoppableFastForward;
                     args.MenuContext.SetAmbientSound("event:/map/ambient/node/settlements/2d/arena");
                 }
             );
+            //OPCION FORRAJEAR
             gameStarter.AddGameMenuOption(
                 "my_camp_activate"
                 ,"start_forraging"
                 ,new TextObject("{=game_menu_forrage}Start forraging.").ToString()
                 ,args =>
                 {
-                    args.optionLeaveType = GameMenuOption.LeaveType.Wait;
+                    args.optionLeaveType = GameMenuOption.LeaveType.Pillage;
                     args.Tooltip = new TextObject("{=hint_forraging}Send the men to forrage the surroundings.");
                     return true;
                 }
@@ -101,9 +105,30 @@ namespace FieldCamp.Behaviours
                 {
                     _IsForraging = true;
                     _IsTrainingCampaing = false;
+                    _IsHiding = false;
                     Campaign.Current.TimeControlMode = CampaignTimeControlMode.UnstoppableFastForward;
                 }
                 );
+            //OPCIÓN EMBOSCADA
+            gameStarter.AddGameMenuOption(
+                "my_camp_activate"
+                , "start_ambush"
+                , new TextObject("{=game_menu_ambush}Prepare an ambush.").ToString()
+                , args =>
+                {
+                    args.optionLeaveType = GameMenuOption.LeaveType.SneakIn;
+                    args.Tooltip = new TextObject("{=hint_ambush}Try to establish an ambush.");
+                    return true;
+                }
+                , args =>
+                {
+                    _IsForraging = false;
+                    _IsTrainingCampaing = false;
+                    _IsHiding = true;
+                    Emboscada.IntentarOcultarse();
+                    Campaign.Current.TimeControlMode = CampaignTimeControlMode.UnstoppablePlay;
+                });
+            //OPCIÓN SALIR 
             gameStarter.AddGameMenuOption(
                 "my_camp_activate"
                 , "exit_camp_option"

@@ -91,7 +91,7 @@ namespace FieldCamp.Behaviours
                 case TerrainType.Fording:
                     Add(dto, "grain", 0.4f);
                     Add(dto, "fish", 0.6f);
-                    dto.PosibilidadesExito = 0.8f;   // antes no lo ponías; usaba el 0.75 por defecto
+                    dto.PosibilidadesExito = 0.8f;   
                     break;
                 case TerrainType.RuralArea:
                     Add(dto, "cow", 0.3f);

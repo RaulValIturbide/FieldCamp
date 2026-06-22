@@ -65,7 +65,6 @@ namespace FieldCamp.Behaviours
                 _forrajeosEnSitio = 0;
             }
         }
-
         private static void RecuperarZonas()
         {
             for (int i = _zonasAgotadas.Count - 1; i >= 0; i--)
@@ -75,7 +74,6 @@ namespace FieldCamp.Behaviours
                     _zonasAgotadas.RemoveAt(i);
             }
         }
-
         private static bool EstaEnZonaAgotada(CampaignVec2 pos)
         {
             foreach (var zona in _zonasAgotadas)
@@ -85,7 +83,6 @@ namespace FieldCamp.Behaviours
             }
             return false;
         }
-
         private static void AgotarZona(CampaignVec2 centro)
         {
             _zonasAgotadas.Add(new ZonaAgotada
@@ -94,7 +91,6 @@ namespace FieldCamp.Behaviours
                 TicksRestantes = TICKS_RECUPERACION
             });
         }
-
         public static void DarAlimento()
         {
             CampaignVec2 posicion = MobileParty.MainParty.Position;
@@ -122,7 +118,6 @@ namespace FieldCamp.Behaviours
                     , new Color(1f, 0f, 0f)));
             }
         }
-
         private static ItemObject SeleccionComida(Dictionary<ItemObject, float> lista)
         {
             float pesoTotal = lista.Values.Sum();
@@ -136,7 +131,6 @@ namespace FieldCamp.Behaviours
             }
             return lista.Keys.LastOrDefault();
         }
-
         private static int SeleccionarCuantaComida()
         {
             float k = 0.12f;
@@ -147,7 +141,6 @@ namespace FieldCamp.Behaviours
                 comida = 1;
             return Math.Min(comida, maxComida);
         }
-
         private static float CantidadSoldadosNoHeridos()
         {
             TroopRoster roster = MobileParty.MainParty.MemberRoster;
@@ -161,14 +154,12 @@ namespace FieldCamp.Behaviours
             }
             return cantidadSoldados;
         }
-
         public static void DesactivarForraje()
         {
             contadorForrajeo = 4;
             _forrajeosEnSitio = 0;
             QuestManager._IsForraging = false;
         }
-
         public static void ExportarZonas(out List<float> xs, out List<float> ys, out List<int> ticks)
         {
             xs = new List<float>();
@@ -182,7 +173,6 @@ namespace FieldCamp.Behaviours
                 ticks.Add(zona.TicksRestantes);
             }
         }
-
         public static void ImportarZonas(List<float> xs, List<float> ys, List<int> ticks)
         {
             _zonasAgotadas.Clear();
