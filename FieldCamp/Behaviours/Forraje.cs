@@ -56,7 +56,6 @@ namespace FieldCamp.Behaviours
             }
 
             DarAlimento();
-
             // Contamos el forrajeo en este sitio; si pasamos del máximo, agotamos la zona
             _forrajeosEnSitio++;
             if (_forrajeosEnSitio >= MAX_FORRAJEOS)

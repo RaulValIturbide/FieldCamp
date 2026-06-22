@@ -9,6 +9,7 @@ using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Roster;
+using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
@@ -97,7 +98,7 @@ namespace FieldCamp.Behaviours
                 ,new TextObject("{=game_menu_forrage}Start forraging.").ToString()
                 ,args =>
                 {
-                    args.optionLeaveType = GameMenuOption.LeaveType.Pillage;
+                    args.optionLeaveType = GameMenuOption.LeaveType.ForceToGiveGoods;
                     args.Tooltip = new TextObject("{=hint_forraging}Send the men to forrage the surroundings.");
                     return true;
                 }
@@ -106,6 +107,8 @@ namespace FieldCamp.Behaviours
                     _IsForraging = true;
                     _IsTrainingCampaing = false;
                     _IsHiding = false;
+                    MBInformationManager.AddQuickInformation(new TextObject("{=forrage_first_time}The men go out to forage the surroundings."), 0
+                                         ,soundEventPath: "event:/ui/notification/quest_update");
                     Campaign.Current.TimeControlMode = CampaignTimeControlMode.UnstoppableFastForward;
                 }
                 );
@@ -143,6 +146,8 @@ namespace FieldCamp.Behaviours
                 {
                     TrainYourTroopsCampaign.DesactivarCampamento();
                     Forraje.DesactivarForraje();
+                    _IsHiding = false;
+                    Emboscada.DesactivarOcultacion();
                     GameMenu.ExitToLast();
                 },
                 true, -1, false);
@@ -154,6 +159,8 @@ namespace FieldCamp.Behaviours
             _IsForraging = false;
             _IsTrainingCampaing = false;
             _resumeCampAfterEncounter = false;
+            _IsHiding = false;
+            Emboscada.DesactivarOcultacion();
             // Forraje y entrenamiento resetean sus propios contadores:
             Forraje.DesactivarForraje();          // pone contadorForrajeo=4, _forrajeosEnSitio=0
         }

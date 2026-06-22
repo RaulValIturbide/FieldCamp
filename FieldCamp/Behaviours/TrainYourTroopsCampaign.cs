@@ -71,8 +71,11 @@ namespace FieldCamp.Behaviours
             {
                 InformationManager.DisplayMessage(
                     new InformationMessage(new TextObject(
-                        "{=train_your_troops_first_time}The men start to practice the art of war.").ToString()
-                        ));
+                        "{=train_your_troops_first_time}The men start to practice the art of war.").ToString(), 
+                        new Color(0.4f, 0.8f, 0.4f)));
+
+                MBInformationManager.AddQuickInformation(new TextObject("{=train_your_troops_first_time_popup}The men start to practice the art of war."), 0
+                    , soundEventPath: "event:/ui/notification/levelup");
                 _IsFirstTime = false;
             }
 

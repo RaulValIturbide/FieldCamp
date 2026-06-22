@@ -78,7 +78,7 @@ namespace FieldCamp.Behaviours
 
             p.IgnoreByOtherPartiesTill(CampaignTime.HoursFromNow(HORAS_IGNORE));
             p.IsVisible = false;                 // capa cosmética
-            //p.Party.SetVisualAsDirty();
+            p.Party.SetVisualAsDirty();
         }
 
         private static float ProbabilidadOcultacion()
