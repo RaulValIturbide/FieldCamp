@@ -8,6 +8,9 @@
 
 ---
 
+<img width="455" height="77" alt="BarraBotones" src="https://github.com/user-attachments/assets/f73842a7-01af-4ef9-865d-43053f469d88" />
+<img width="1600" height="895" alt="Campaign" src="https://github.com/user-attachments/assets/6f9e562d-f1f0-40c3-815f-440bdfc0685c" />
+
 ## 📖 Descripción
 
 **Field Camp** añade un icono de campamento al mapa de campaña y abre un menú cuyo fondo cambia según tu cultura y el terreno que te rodea. Con el campamento montado, tus hombres esperan tus órdenes: pueden entrenar, salir a forrajear o prepararse para una emboscada.
