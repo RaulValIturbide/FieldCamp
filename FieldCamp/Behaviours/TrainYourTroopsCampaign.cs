@@ -43,7 +43,7 @@ namespace FieldCamp.Behaviours
             }
             else//Heridos
             {
-                HerirSoldado();
+                //HerirSoldado();
             }
             LanzarMensajeAmbiental();
         }
@@ -55,6 +55,7 @@ namespace FieldCamp.Behaviours
             _IsFirstTime = true;
             CampVisualPatch.RemoveTent();
             MobileParty.MainParty.Party.SetVisualAsDirty();
+            Emboscada.DesactivarOcultacion();
         }
         #endregion
 

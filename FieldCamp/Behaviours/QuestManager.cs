@@ -15,6 +15,8 @@ using TaleWorlds.Localization;
 
 namespace FieldCamp.Behaviours
 {
+    //TODO 
+    // QUE NO SE PUEDA HACER NINGUNA OPCIÓN SI SE ESTÁ EN UNA ARMY
     public class QuestManager : CampaignBehaviorBase
     {
         public static bool _IsCamping;
