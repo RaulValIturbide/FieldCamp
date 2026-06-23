@@ -96,7 +96,7 @@ Instala el archivo directamente desde Vortex; la extensión de Bannerlord detect
 
 ## 🔧 Compatibilidad
 
-- **Versión del juego:** *(indica aquí la versión de Bannerlord con la que has probado, p. ej. e1.2.x)*
+- **Versión del juego:** *(1.2.4,1.4.5,1.4.6)*
 - Compatible con partidas existentes.
 - Se recomienda colocarlo **después** de los módulos nativos en el orden de carga.
 
