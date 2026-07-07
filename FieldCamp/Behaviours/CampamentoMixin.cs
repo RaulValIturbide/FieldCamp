@@ -1,17 +1,9 @@
 ﻿using Bannerlord.UIExtenderEx.Attributes;
 using Bannerlord.UIExtenderEx.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaleWorlds;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.CampaignSystem.Party;
-using TaleWorlds.CampaignSystem.Siege;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Map.MapBar;
-using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -23,6 +15,9 @@ namespace FieldCamp.Behaviours
     {
         #region Propiedades Privadas
         private BasicTooltipViewModel _campamentoHint;
+        private BasicTooltipViewModel _fastForwardX4Hint;
+        private bool _isFastForwardX4Selected;
+        private bool _isFastForwardNormalSelected;
         #endregion
 
         [DataSourceProperty]
@@ -38,9 +33,23 @@ namespace FieldCamp.Behaviours
                 }
             }
         }
+        [DataSourceProperty]
+        public BasicTooltipViewModel FastForwardX4Hint
+        {
+            get => _fastForwardX4Hint;
+            set
+            {
+                if(_fastForwardX4Hint != value)
+                {
+                    _fastForwardX4Hint = value;
+                    ViewModel?.OnPropertyChangedWithValue(value, "FastForwardHint");
+                }
+            }
+        }
         public CampamentoMixin(MapTimeControlVM vm) : base(vm)
         {
             _campamentoHint = new BasicTooltipViewModel(() => new TextObject("{=hint_btn_campamento}Set up your camp here.").ToString());
+            _fastForwardX4Hint = new BasicTooltipViewModel(() => new TextObject("{=hint_btn_fastforward_x4}Fast forward time x4[4].").ToString());
         }
 
         [DataSourceMethod]
@@ -52,6 +61,36 @@ namespace FieldCamp.Behaviours
             GameMenu.ActivateGameMenu("my_camp_activate");
             Campaign.Current.TimeControlMode = CampaignTimeControlMode.Stop;
         }
+       
+
+        [DataSourceProperty]
+        public bool IsFastForwardX4Selected
+        {
+            get => _isFastForwardX4Selected;
+            set
+            {
+                if (_isFastForwardX4Selected != value)
+                {
+                    _isFastForwardX4Selected = value;
+                    ViewModel?.OnPropertyChangedWithValue(value, "IsFastForwardX4Selected");
+                }
+            }
+        }
+
+
+        [DataSourceMethod]
+        public void ExecuteFastForwardX4()
+        {
+            Campaign campaign = Campaign.Current;
+            if (campaign == null) return;
+
+            MySubModule.IsFastForwardX4Active = !MySubModule.IsFastForwardX4Active;
+            campaign.SpeedUpMultiplier = MySubModule.IsFastForwardX4Active ? 8f : 4f;
+            campaign.SetTimeSpeed(2);
+            IsFastForwardX4Selected = MySubModule.IsFastForwardX4Active;
+            RefreshFastForwardSelectionState();
+        }
+
         private bool HayImpedimento()
         {
             bool hayImpedimento = true;
@@ -90,6 +129,19 @@ namespace FieldCamp.Behaviours
                 hayImpedimento = false;
             }
             return hayImpedimento;
+        }
+
+        private void RefreshFastForwardSelectionState()
+        {
+            bool isFastForward = Campaign.Current.TimeControlMode == CampaignTimeControlMode.StoppableFastForward
+                               || Campaign.Current.TimeControlMode == CampaignTimeControlMode.UnstoppableFastForward;
+
+            IsFastForwardX4Selected = isFastForward && MySubModule.IsFastForwardX4Active;
+        }
+        public override void OnRefresh()
+        {
+            base.OnRefresh();
+            IsFastForwardX4Selected = MySubModule.IsFastForwardX4Active;
         }
     }
 }

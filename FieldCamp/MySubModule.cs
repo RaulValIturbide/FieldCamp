@@ -17,6 +17,7 @@ namespace FieldCamp
     internal class MySubModule : MBSubModuleBase
     {
         private Harmony _harmony;
+        public static bool IsFastForwardX4Active = false;
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
