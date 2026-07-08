@@ -97,11 +97,11 @@ namespace FieldCamp.Behaviours
             gameStarter.AddGameMenuOption(
                 "my_camp_activate"
                 ,"start_forraging"
-                ,new TextObject("{=game_menu_forrage}Start forraging.").ToString()
+                ,new TextObject("{=game_menu_forage}Start forraging.").ToString()
                 ,args =>
                 {
                     args.optionLeaveType = GameMenuOption.LeaveType.ForceToGiveGoods;
-                    args.Tooltip = new TextObject("{=hint_forraging}Send the men to forrage the surroundings.");
+                    args.Tooltip = new TextObject("{=hint_forraging}Send the men to forage the surroundings.");
                     return true;
                 }
                 ,args =>
@@ -109,7 +109,7 @@ namespace FieldCamp.Behaviours
                     _IsForraging = true;
                     _IsTrainingCampaing = false;
                     _IsHiding = false;
-                    MBInformationManager.AddQuickInformation(new TextObject("{=forrage_first_time}The men go out to forage the surroundings."), 0
+                    MBInformationManager.AddQuickInformation(new TextObject("{=forage_first_time}The men go out to forage the surroundings."), 0
                                          ,soundEventPath: "event:/ui/notification/quest_update");
                     Campaign.Current.TimeControlMode = CampaignTimeControlMode.UnstoppableFastForward;
                 }

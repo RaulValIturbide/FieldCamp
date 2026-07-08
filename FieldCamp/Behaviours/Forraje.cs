@@ -16,7 +16,7 @@ namespace FieldCamp.Behaviours
 
         // Cuántos forrajeos seguidos llevamos en el sitio actual
         private static int _forrajeosEnSitio = 0;
-        private const int MAX_FORRAJEOS = 4;             // tras 4 forrajeos, la zona se agota
+        private static int MAX_FORRAJEOS = FieldCampSettings.Instance?.MaxForageAttempts ?? 4; // tras x forrajeos, la zona se agota
 
         // Zonas agotadas: centro + ticks que faltan para que se recupere
         private static readonly List<ZonaAgotada> _zonasAgotadas = new();
@@ -50,7 +50,7 @@ namespace FieldCamp.Behaviours
             if (EstaEnZonaAgotada(pos))
             {
                 InformationManager.DisplayMessage(new InformationMessage(
-                    new TextObject("{=forrage_exhausted}No more food is available in the area for now.").ToString()
+                    new TextObject("{=forage_exhausted}No more food is available in the area for now.").ToString()
                     , new Color(1f, 0.6f, 0f)));
                 return;
             }
@@ -104,7 +104,7 @@ namespace FieldCamp.Behaviours
                 if (comida == null) return;
                 MobileParty.MainParty.ItemRoster.AddToCounts(comida, cantidadComida);
 
-                TextObject TxtCantidadComida = new TextObject("{=forrage_food_quantity}The men bring {quantity} of {food}.");
+                TextObject TxtCantidadComida = new TextObject("{=forage_food_quantity}The men bring {quantity} of {food}.");
                 TxtCantidadComida.SetTextVariable("quantity", cantidadComida);
                 TxtCantidadComida.SetTextVariable("food", comida.Name);
 
@@ -113,7 +113,7 @@ namespace FieldCamp.Behaviours
             else
             {
                 InformationManager.DisplayMessage(new InformationMessage(
-                    new TextObject("{=forrage_fail}The men found nothing.").ToString()
+                    new TextObject("{=forage_fail}The men found nothing.").ToString()
                     , new Color(1f, 0f, 0f)));
             }
         }

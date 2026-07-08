@@ -20,6 +20,11 @@ namespace FieldCamp.Behaviours
         private bool _isFastForwardNormalSelected;
         #endregion
 
+        #region Propiedades Publicas
+        public static CampamentoMixin Instance { get; private set; }
+        #endregion
+
+        #region PROPIEDADES DATASOURCE
         [DataSourceProperty]
         public BasicTooltipViewModel CampamentoHint
         {
@@ -46,23 +51,6 @@ namespace FieldCamp.Behaviours
                 }
             }
         }
-        public CampamentoMixin(MapTimeControlVM vm) : base(vm)
-        {
-            _campamentoHint = new BasicTooltipViewModel(() => new TextObject("{=hint_btn_campamento}Set up your camp here.").ToString());
-            _fastForwardX4Hint = new BasicTooltipViewModel(() => new TextObject("{=hint_btn_fastforward_x4}Fast forward time x4[4].").ToString());
-        }
-
-        [DataSourceMethod]
-        public void ExecuteCampamento()
-        {
-            if (HayImpedimento())
-                return;
-
-            GameMenu.ActivateGameMenu("my_camp_activate");
-            Campaign.Current.TimeControlMode = CampaignTimeControlMode.Stop;
-        }
-       
-
         [DataSourceProperty]
         public bool IsFastForwardX4Selected
         {
@@ -76,8 +64,42 @@ namespace FieldCamp.Behaviours
                 }
             }
         }
+        #endregion
 
+        #region CONSTRUCTOR
+        public CampamentoMixin(MapTimeControlVM vm) : base(vm)
+        {
+            Instance = this;
+            _campamentoHint = new BasicTooltipViewModel(() => new TextObject("{=hint_btn_campamento}Set up your camp here.").ToString());
+            _fastForwardX4Hint = new BasicTooltipViewModel(() => new TextObject("{=hint_btn_fastforward_x4}Fast forward time x4[4].").ToString());
+        }
+        #endregion
 
+        #region METODOS PÚBLICOS
+        [DataSourceMethod]
+        public void ExecuteCampamento()
+        {
+            if (HayImpedimento())
+                return;
+
+            GameMenu.ActivateGameMenu("my_camp_activate");
+            Campaign.Current.TimeControlMode = CampaignTimeControlMode.Stop;          
+        }
+        public  void ExitCampamento()
+        {
+            GameMenu.ExitToLast();
+        }
+        public override void OnRefresh()
+        {
+            base.OnRefresh();
+            IsFastForwardX4Selected = MySubModule.IsFastForwardX4Active;
+        }
+        public override void OnFinalize()
+        {
+            base.OnFinalize();
+            if (Instance == this)
+                Instance = null;
+        }
         [DataSourceMethod]
         public void ExecuteFastForwardX4()
         {
@@ -85,12 +107,16 @@ namespace FieldCamp.Behaviours
             if (campaign == null) return;
 
             MySubModule.IsFastForwardX4Active = !MySubModule.IsFastForwardX4Active;
-            campaign.SpeedUpMultiplier = MySubModule.IsFastForwardX4Active ? 8f : 4f;
+            if (FieldCampSettings.Instance == null)
+                return;
+            campaign.SpeedUpMultiplier = MySubModule.IsFastForwardX4Active ? FieldCampSettings.Instance.FastForwardSpeed : 4f;
             campaign.SetTimeSpeed(2);
             IsFastForwardX4Selected = MySubModule.IsFastForwardX4Active;
             RefreshFastForwardSelectionState();
         }
+        #endregion
 
+        #region METODOS PRIVADOS
         private bool HayImpedimento()
         {
             bool hayImpedimento = true;
@@ -130,7 +156,6 @@ namespace FieldCamp.Behaviours
             }
             return hayImpedimento;
         }
-
         private void RefreshFastForwardSelectionState()
         {
             bool isFastForward = Campaign.Current.TimeControlMode == CampaignTimeControlMode.StoppableFastForward
@@ -138,10 +163,6 @@ namespace FieldCamp.Behaviours
 
             IsFastForwardX4Selected = isFastForward && MySubModule.IsFastForwardX4Active;
         }
-        public override void OnRefresh()
-        {
-            base.OnRefresh();
-            IsFastForwardX4Selected = MySubModule.IsFastForwardX4Active;
-        }
+        #endregion
     }
 }

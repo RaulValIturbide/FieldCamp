@@ -16,10 +16,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Reference Include="Bannerlord.ButterLib">
+		  <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\261550\2859232415\bin\Win64_Shipping_Client\Bannerlord.ButterLib.dll</HintPath>
+		  <Private>False</Private>
+		</Reference>
 		<Reference Include="Bannerlord.UIExtenderEx">
 		  <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\261550\2859222409\bin\Win64_Shipping_Client\Bannerlord.UIExtenderEx.dll</HintPath>
 		  <Private>False</Private>
 		</Reference>
+		<Reference Include="MCMv5">
+		  <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\261550\2859238197\bin\Win64_Shipping_Client\MCMv5.dll</HintPath>
+		  <Private>False</Private>
+		</Reference>
+
 		<Reference Include="SandBox.View">
 		  <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\SandBox\bin\Win64_Shipping_Client\SandBox.View.dll</HintPath>
 		  <Private>False</Private>
@@ -66,6 +75,10 @@
 		</Reference>
 		<Reference Include="TaleWorlds.GauntletUI.Data">
 		  <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.GauntletUI.Data.dll</HintPath>
+		  <Private>False</Private>
+		</Reference>
+		<Reference Include="TaleWorlds.InputSystem">
+		  <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.InputSystem.dll</HintPath>
 		  <Private>False</Private>
 		</Reference>
 		<Reference Include="TaleWorlds.Library">

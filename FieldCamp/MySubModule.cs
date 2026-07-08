@@ -8,16 +8,32 @@ using TaleWorlds.Core;
 using TaleWorlds.Localization;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.InputSystem;
 using Bannerlord.UIExtenderEx;
 using FieldCamp.Behaviours;
 using HarmonyLib;
-
+using QuestManager = FieldCamp.Behaviours.QuestManager;
 namespace FieldCamp
 {
     internal class MySubModule : MBSubModuleBase
     {
         private Harmony _harmony;
         public static bool IsFastForwardX4Active = false;
+        protected override void OnApplicationTick(float dt)
+        {
+            if(!QuestManager._IsCamping && Input.IsKeyReleased(InputKey.D5) )
+            {
+                CampamentoMixin.Instance.ExecuteCampamento();
+            }
+            
+            if(FieldCampSettings.Instance != null
+                && FieldCampSettings.Instance.IsX4HotkeyEnabled 
+                && !IsFastForwardX4Active 
+                && Input.IsKeyReleased(InputKey.D4))
+            {
+                CampamentoMixin.Instance?.ExecuteFastForwardX4();                
+            }
+        }
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
