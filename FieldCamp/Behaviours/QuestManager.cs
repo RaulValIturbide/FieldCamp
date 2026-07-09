@@ -20,7 +20,7 @@ namespace FieldCamp.Behaviours
     public class QuestManager : CampaignBehaviorBase
     {
         public static bool _IsCamping;
-        public static bool _IsForraging;
+        public static bool _IsForaging;
         public static bool _IsTrainingCampaing;
         public static bool _IsHiding;
         public static bool _resumeCampAfterEncounter;
@@ -87,7 +87,7 @@ namespace FieldCamp.Behaviours
                 , args =>
                 {
                     _IsTrainingCampaing = true;
-                    _IsForraging = false;
+                    _IsForaging = false;
                     _IsHiding = false;
                     Campaign.Current.TimeControlMode = CampaignTimeControlMode.UnstoppableFastForward;
                     args.MenuContext.SetAmbientSound("event:/map/ambient/node/settlements/2d/arena");
@@ -96,17 +96,17 @@ namespace FieldCamp.Behaviours
             //OPCION FORRAJEAR
             gameStarter.AddGameMenuOption(
                 "my_camp_activate"
-                ,"start_forraging"
-                ,new TextObject("{=game_menu_forage}Start forraging.").ToString()
+                ,"start_foraging"
+                ,new TextObject("{=game_menu_forage}Start foraging.").ToString()
                 ,args =>
                 {
                     args.optionLeaveType = GameMenuOption.LeaveType.ForceToGiveGoods;
-                    args.Tooltip = new TextObject("{=hint_forraging}Send the men to forage the surroundings.");
+                    args.Tooltip = new TextObject("{=hint_foraging}Send the men to forage the surroundings.");
                     return true;
                 }
                 ,args =>
                 {
-                    _IsForraging = true;
+                    _IsForaging = true;
                     _IsTrainingCampaing = false;
                     _IsHiding = false;
                     MBInformationManager.AddQuickInformation(new TextObject("{=forage_first_time}The men go out to forage the surroundings."), 0
@@ -127,7 +127,7 @@ namespace FieldCamp.Behaviours
                 }
                 , args =>
                 {
-                    _IsForraging = false;
+                    _IsForaging = false;
                     _IsTrainingCampaing = false;
                     _IsHiding = true;
                     Emboscada.IntentarOcultarse();
@@ -158,7 +158,7 @@ namespace FieldCamp.Behaviours
         private void OnGameLoaded(CampaignGameStarter starter)
         {
             _IsCamping = false;
-            _IsForraging = false;
+            _IsForaging = false;
             _IsTrainingCampaing = false;
             _resumeCampAfterEncounter = false;
             _IsHiding = false;

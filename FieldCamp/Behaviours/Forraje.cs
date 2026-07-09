@@ -34,7 +34,7 @@ namespace FieldCamp.Behaviours
             // Las zonas se recuperan con el tiempo, estés forrajeando o no
             RecuperarZonas();
 
-            if (!QuestManager._IsCamping || !QuestManager._IsForraging)
+            if (!QuestManager._IsCamping || !QuestManager._IsForaging)
                 return;
 
             if (contadorForrajeo > 0)
@@ -157,7 +157,7 @@ namespace FieldCamp.Behaviours
         {
             contadorForrajeo = 4;
             _forrajeosEnSitio = 0;
-            QuestManager._IsForraging = false;
+            QuestManager._IsForaging = false;
         }
         public static void ExportarZonas(out List<float> xs, out List<float> ys, out List<int> ticks)
         {
